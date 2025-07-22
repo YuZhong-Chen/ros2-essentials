@@ -5,9 +5,11 @@
 
     <!-- Declare argument -->
     <xacro:arg name="enable_gazebo" default="False"/>
+    <xacro:arg name="enable_xt16" default="False"/>
 
     <!-- Declare parameters -->
     <xacro:property name="enable_gazebo" value="$(arg enable_gazebo)"/>
+    <xacro:property name="enable_xt16" value="$(arg enable_xt16)"/>
 
     <!-- Include other file -->
     <xacro:include filename="$(find go2_description)/xacro/const.xacro"/>
@@ -124,4 +126,22 @@
         <child link="front_camera_link" />
         <axis xyz="0 0 0" />
     </joint>
+
+    <!-- xt16 lidar -->
+    <xacro:if value="${enable_xt16}">
+        <link name="xt16_link">
+            <visual>
+                <origin xyz="0 0 -0.0464" rpy="0 0 -1.5708" />
+                <geometry>
+                    <mesh filename="package://go2_description/dae/xt32.dae" scale="1 1 1"/>
+                </geometry>
+            </visual>
+        </link>
+        <joint name="xt16_lidar_mount_joint" type="fixed">
+            <origin xyz="0.171 0 0.0908" rpy="0 0 1.5708" />
+            <parent link="imu_link" />
+            <child link="xt16_link" />
+            <axis xyz="0 0 0" />
+        </joint>
+    </xacro:if>
 </robot>
