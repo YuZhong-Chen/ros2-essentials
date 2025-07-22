@@ -161,6 +161,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=private \
     ros-$ROS_DISTRO-joint-state-publisher \
     ros-$ROS_DISTRO-joint-state-publisher-gui \
     ros-$ROS_DISTRO-velodyne-gazebo-plugins \
+    # Install realsense dependencies
+    ros-$ROS_DISTRO-realsense2-* \
+    ros-$ROS_DISTRO-librealsense2* \
     && sudo rm -rf /var/lib/apt/lists/*
 
 COPY --chown=$USERNAME:$USERNAME \

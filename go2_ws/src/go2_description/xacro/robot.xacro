@@ -6,10 +6,12 @@
     <!-- Declare argument -->
     <xacro:arg name="enable_gazebo" default="False"/>
     <xacro:arg name="enable_xt16" default="False"/>
+    <xacro:arg name="enable_realsense" default="False"/>
 
     <!-- Declare parameters -->
     <xacro:property name="enable_gazebo" value="$(arg enable_gazebo)"/>
     <xacro:property name="enable_xt16" value="$(arg enable_xt16)"/>
+    <xacro:property name="enable_realsense" value="$(arg enable_realsense)"/>
 
     <!-- Include other file -->
     <xacro:include filename="$(find go2_description)/xacro/const.xacro"/>
@@ -141,6 +143,50 @@
             <origin xyz="0.171 0 0.0908" rpy="0 0 1.5708" />
             <parent link="imu_link" />
             <child link="xt16_link" />
+            <axis xyz="0 0 0" />
+        </joint>
+    </xacro:if>
+
+    <!-- Realsense D435i camera -->
+    <!-- If you want to adjust the angle of realsense up or down,
+         please modify the rpy values in the `realsense_joint`. -->
+    <xacro:if value="${enable_realsense}">
+        <!-- camera mount link -->
+        <link name="realsense_mount_link"/>
+        <joint name="realsense_mount_joint" type="fixed">
+            <origin xyz="0.035 0 0.072" rpy="0 0 0" />
+            <parent link="Head_upper" />
+            <child link="realsense_mount_link" />
+            <axis xyz="0 0 0" />
+        </joint>
+
+        <!-- camera link -->
+        <link name="realsense_link">
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <mass value="0.072" />
+                <inertia ixx="0.0000215" ixy="0" ixz="0" iyy="0.0000302" iyz="0" izz="0.0000330" />
+            </inertial>
+            <visual>
+                <origin xyz="0.02 0 0" rpy="-1.5708 3.14 -1.5708 " />
+                <geometry>
+                    <mesh filename="package://realsense2_description/meshes/d435.dae" scale="1 1 1"/>
+                </geometry>
+                <material name="dark_grey">
+                    <color rgba="0.1 0.1 0.1 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="0.01 0 0" rpy="0 0 0" />
+                <geometry>
+                    <box size="0.025 0.09 0.025" />
+                </geometry>
+            </collision>
+        </link>
+        <joint name="realsense_joint" type="fixed">
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <parent link="realsense_mount_link" />
+            <child link="realsense_link" />
             <axis xyz="0 0 0" />
         </joint>
     </xacro:if>
